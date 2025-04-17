@@ -1,21 +1,17 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import "../styles/Signup.css";
-import { Link } from "react-router-dom";
-
 import { signUpCognito } from "../authService";
 
 const Signup = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false); // ✅ New
-
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
   const handleSignup = (e) => {
     e.preventDefault();
-
     const role = "student";
 
     signUpCognito(
@@ -26,7 +22,8 @@ const Signup = () => {
       (result) => {
         console.log("✅ Signup success:", result);
         alert("Account created! Check your email to verify.");
-        navigate("/verify");
+        // ✅ Pass email to /verify
+        navigate("/verify", { state: { email } });
       },
       (err) => {
         console.error("❌ Signup failed:", err.message);
@@ -81,11 +78,10 @@ const Signup = () => {
         </div>
 
         <button type="submit">Create Account</button>
+
         <p className="login-redirect">
-  Already have an account? <Link to="/login">Log in here</Link>
-</p>
-
-
+          Already have an account? <Link to="/login">Log in here</Link>
+        </p>
       </form>
     </div>
   );
