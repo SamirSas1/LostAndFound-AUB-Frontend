@@ -9,6 +9,8 @@ import MyUploads from "./pages/MyUploads";
 import ForgotPass from "./pages/ForgotPassword"; // ✅ Import the page
 import Navbar from "./components/Navbar";
 import Verify from "./pages/verify";
+import ProtectedRoute from "./components/ProtectedRoute"; // ✅ import
+import { Navigate } from "react-router-dom";
 
 const Layout = ({ children }) => {
   const location = useLocation();
@@ -30,15 +32,76 @@ function App() {
     <Router>
       <Layout>
         <Routes>
+          {/* ✅ Only public route */}
           <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/forgot-password" element={<ForgotPass />} /> {/* ✅ Route added */}
-          <Route path="/search-found" element={<Search />} />
-          <Route path="/upload-lost" element={<UploadLost />} />
-          <Route path="/upload-found" element={<UploadFound />} />
-          <Route path="/my-items" element={<MyUploads />} />
-          <Route path="/verify" element={<Verify />} />
 
+          {/* ✅ All other routes are protected */}
+          <Route
+            path="/signup"
+            element={
+              <ProtectedRoute>
+                <Signup />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/forgot-password"
+            element={
+              <ProtectedRoute>
+                <ForgotPass />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/verify"
+            element={
+              <ProtectedRoute>
+                <Verify />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/search-found"
+            element={
+              <ProtectedRoute>
+                <Search />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/upload-lost"
+            element={
+              <ProtectedRoute>
+                <UploadLost />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/upload-found"
+            element={
+              <ProtectedRoute>
+                <UploadFound />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/my-items"
+            element={
+              <ProtectedRoute>
+                <MyUploads />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* ✅ Optional: Root redirect */}
+          <Route
+            path="/"
+            element={
+              localStorage.getItem("idToken")
+                ? <Navigate to="/search-found" replace />
+                : <Navigate to="/login" replace />
+            }
+          />
         </Routes>
       </Layout>
     </Router>

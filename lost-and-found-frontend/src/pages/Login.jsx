@@ -1,14 +1,14 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { loginCognito } from "../authService";
-import '../styles/Login.css';
-import { Link } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
 
+import "../styles/Login.css";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false); // ✅ NEW
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
   const handleLogin = (e) => {
@@ -18,8 +18,15 @@ const Login = () => {
       email,
       password,
       (tokens) => {
-        console.log("✅ Login success:", tokens);
-        localStorage.setItem("idToken", tokens.idToken);
+        const idToken = tokens.idToken;
+        const userInfo = jwtDecode(idToken);
+
+        console.log("✅ Login success:", userInfo);
+
+        // Store the token + user info
+        localStorage.setItem("idToken", idToken);
+        localStorage.setItem("userInfo", JSON.stringify(userInfo));
+
         navigate("/search-found");
       },
       (err) => {
@@ -27,10 +34,15 @@ const Login = () => {
       },
       (user, userAttributes, requiredAttributes) => {
         const newPassword = prompt("Enter a new password to complete your first-time login:");
+
         user.completeNewPasswordChallenge(newPassword, {}, {
           onSuccess: (result) => {
             const idToken = result.getIdToken().getJwtToken();
+            const userInfo = jwtDecode(idToken);;
+
             localStorage.setItem("idToken", idToken);
+            localStorage.setItem("userInfo", JSON.stringify(userInfo));
+
             navigate("/search-found");
           },
           onFailure: (err) => {
@@ -60,7 +72,7 @@ const Login = () => {
 
         <div className="password-input-wrapper">
           <input
-            type={showPassword ? "text" : "password"} // ✅ toggle
+            type={showPassword ? "text" : "password"}
             placeholder="Password"
             value={password}
             required
@@ -93,9 +105,8 @@ const Login = () => {
         </button>
 
         <p className="signup-redirect">
-  Don’t have an account? <Link to="/signup">Sign up here</Link>
-</p>
-
+          Don’t have an account? <Link to="/signup">Sign up here</Link>
+        </p>
       </form>
     </div>
   );
