@@ -1,0 +1,54 @@
+/* Search.css */
+.search-page {
+    padding: 40px;
+    max-width: 1200px;
+    margin: auto;
+  }
+  
+  .search-title {
+    text-align: center;
+    font-size: 2.5rem;
+    margin-bottom: 40px;
+    color:  #ac19e1;
+  }
+  
+  .item-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 32px;
+    padding: 40px 0;
+  }
+  
+  .item-card {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    transition: all 0.3s ease;
+  }
+  
+  .item-card:hover {
+    transform: translateY(-5px);
+  }
+  
+  .item-card img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+  }
+  
+  .item-card .info {
+    padding: 20px;
+  }
+  
+  .item-card .info h2 {
+    font-size: 1.2rem;
+    margin: 0;
+  }
+  
+  .item-card .info p {
+    color: var(--gray);
+    font-size: 0.9rem;
+    margin-top: 8px;
+  }
+  
