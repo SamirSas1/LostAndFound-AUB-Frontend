@@ -50,4 +50,13 @@
     width: 100%;
     font-size: 1rem;
   }
+  .password-input-wrapper {
+    position: relative;
+    margin-left: -35px; /* match your Login page */
+  }
+  
+  .password-input-wrapper input {
+    width: 100%;
+  }
+  
   

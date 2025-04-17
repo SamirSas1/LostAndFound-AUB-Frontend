@@ -8,11 +8,12 @@ import UploadFound from "./pages/UploadFound";
 import MyUploads from "./pages/MyUploads";
 import ForgotPass from "./pages/ForgotPassword"; // ✅ Import the page
 import Navbar from "./components/Navbar";
+import Verify from "./pages/verify";
 
 const Layout = ({ children }) => {
   const location = useLocation();
   const hideNavbar =
-    location.pathname === "/" ||
+    location.pathname === "/login" ||
     location.pathname === "/signup" ||
     location.pathname === "/forgot-password"; // ✅ Hide navbar on ForgotPass too
 
@@ -29,13 +30,15 @@ function App() {
     <Router>
       <Layout>
         <Routes>
-          <Route path="/" element={<Login />} />
+          <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/forgot-password" element={<ForgotPass />} /> {/* ✅ Route added */}
           <Route path="/search-found" element={<Search />} />
           <Route path="/upload-lost" element={<UploadLost />} />
           <Route path="/upload-found" element={<UploadFound />} />
           <Route path="/my-items" element={<MyUploads />} />
+          <Route path="/verify" element={<Verify />} />
+
         </Routes>
       </Layout>
     </Router>

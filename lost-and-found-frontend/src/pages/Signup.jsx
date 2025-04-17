@@ -1,20 +1,38 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/Signup.css";
+import { Link } from "react-router-dom";
+
+import { signUpCognito } from "../authService";
 
 const Signup = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [role, setRole] = useState("student");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false); // ✅ New
 
   const navigate = useNavigate();
 
   const handleSignup = (e) => {
     e.preventDefault();
-    console.log("Signing up with:", { name, email, password, role });
-    // TODO: Send signup data to backend
-    navigate("/search-found");
+
+    const role = "student";
+
+    signUpCognito(
+      name,
+      email,
+      password,
+      role,
+      (result) => {
+        console.log("✅ Signup success:", result);
+        alert("Account created! Check your email to verify.");
+        navigate("/verify");
+      },
+      (err) => {
+        console.error("❌ Signup failed:", err.message);
+        alert("Signup failed: " + err.message);
+      }
+    );
   };
 
   return (
@@ -38,24 +56,36 @@ const Signup = () => {
           onChange={(e) => setEmail(e.target.value)}
         />
 
-        <select
-          value={role}
-          onChange={(e) => setRole(e.target.value)}
-          required
-        >
-          <option value="student">Student</option>
-          <option value="staff">Staff</option>
-        </select>
-
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          required
-          onChange={(e) => setPassword(e.target.value)}
-        />
+        <div className="password-input-wrapper">
+          <input
+            type={showPassword ? "text" : "password"}
+            placeholder="Password"
+            value={password}
+            required
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          <span
+            className="toggle-password"
+            onClick={() => setShowPassword((prev) => !prev)}
+            style={{
+              cursor: "pointer",
+              position: "absolute",
+              right: "0px",
+              top: "37%",
+              transform: "translateY(-50%)",
+              userSelect: "none"
+            }}
+          >
+            {showPassword ? "🙈" : "👁️"}
+          </span>
+        </div>
 
         <button type="submit">Create Account</button>
+        <p className="login-redirect">
+  Already have an account? <Link to="/login">Log in here</Link>
+</p>
+
+
       </form>
     </div>
   );

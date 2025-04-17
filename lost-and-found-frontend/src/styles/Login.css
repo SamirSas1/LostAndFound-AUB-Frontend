@@ -72,4 +72,13 @@
     font-size: 0.9rem;
   }
   
+  .password-input-wrapper {
+    position: relative;
+    width: 100%;
+    margin-left: -35px;
+  }
+  
+  .password-input-wrapper input {
+    width: 100%;
+  }
   
