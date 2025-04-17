@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { getEmailFromToken } from '../utils/tokenUtils';
 import '../styles/UploadLost.css';
 
 const UploadLost = () => {
@@ -23,18 +24,64 @@ const UploadLost = () => {
 
   const handleImageRemove = () => {
     setFormData({ ...formData, image: null });
-    document.getElementById('imageInput').value = ''; // reset file input
+    document.getElementById('imageInput').value = '';
   };
 
-  const handleSubmit = (e) => {
+  const toBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = (error) => reject(error);
+    });
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const data = new FormData();
-    data.append('itemName', formData.itemName);
-    data.append('description', formData.description);
-    data.append('date', formData.date);
-    data.append('image', formData.image);
-    console.log('Submitting:', formData);
-    // Send to backend
+
+    const email = getEmailFromToken();
+    if (!email) {
+      alert("You must be logged in to upload a lost item.");
+      return;
+    }
+
+    if (!formData.image) {
+      alert("Please select an image.");
+      return;
+    }
+
+    try {
+      const base64Image = await toBase64(formData.image);
+
+      const payload = {
+        title: formData.itemName,
+        description: formData.description,
+        email: email,
+        image: base64Image
+      };
+
+      const response = await fetch('https://ieq3dmri5l.execute-api.eu-west-1.amazonaws.com/dev/upload-lost-item', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+      });
+
+      const result = await response.json();
+      console.log('✅ Upload result:', result);
+
+      if (response.ok) {
+        alert("Lost item uploaded successfully.");
+        navigate('/my-uploads');
+      } else {
+        alert("Upload failed: " + result.error);
+      }
+
+    } catch (error) {
+      console.error("Upload error:", error);
+      alert("Something went wrong. Try again.");
+    }
   };
 
   return (

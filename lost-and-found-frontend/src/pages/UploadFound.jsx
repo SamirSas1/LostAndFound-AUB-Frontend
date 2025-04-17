@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import '../styles/UploadLost.css'; // same styling as UploadLost
+import { getEmailFromToken } from '../utils/tokenUtils';
+import '../styles/UploadLost.css'; // reuse same style
 
 const UploadFound = () => {
   const navigate = useNavigate();
@@ -9,16 +10,13 @@ const UploadFound = () => {
     itemName: '',
     description: '',
     date: '',
+    isVerified: 'true',
     image: null,
-    verifiable: false,
   });
 
   const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setFormData({
-      ...formData,
-      [name]: type === 'checkbox' ? checked : value,
-    });
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
   };
 
   const handleImageChange = (e) => {
@@ -30,16 +28,61 @@ const UploadFound = () => {
     document.getElementById('imageInput').value = '';
   };
 
-  const handleSubmit = (e) => {
+  const toBase64 = (file) =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = (error) => reject(error);
+    });
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const data = new FormData();
-    data.append('itemName', formData.itemName);
-    data.append('description', formData.description);
-    data.append('date', formData.date);
-    data.append('image', formData.image);
-    data.append('verifiable', formData.verifiable);
-    console.log('Submitting:', Object.fromEntries(data.entries()));
-    // Send to backend
+
+    const email = getEmailFromToken();
+    if (!email) {
+      alert("You must be logged in to upload a found item.");
+      return;
+    }
+
+    if (!formData.image) {
+      alert("Please select an image.");
+      return;
+    }
+
+    try {
+      const base64Image = await toBase64(formData.image);
+
+      const payload = {
+        title: formData.itemName,
+        description: formData.description,
+        email: email,
+        image: base64Image,
+        isVerified: formData.isVerified === 'true'
+      };
+
+      const response = await fetch('https://ieq3dmri5l.execute-api.eu-west-1.amazonaws.com/dev/upload-found-item', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+      });
+
+      const result = await response.json();
+      console.log('✅ Upload result:', result);
+
+      if (response.ok) {
+        alert("Found item uploaded successfully.");
+        navigate('/my-uploads');
+      } else {
+        alert("Upload failed: " + result.error);
+      }
+
+    } catch (error) {
+      console.error("Upload error:", error);
+      alert("Something went wrong. Try again.");
+    }
   };
 
   return (
@@ -48,7 +91,7 @@ const UploadFound = () => {
         <button
           type="button"
           className="close-button"
-          onClick={() => navigate('/search-found')}
+          onClick={() => navigate('/search-lost')}
         >
           &times;
         </button>
@@ -101,12 +144,15 @@ const UploadFound = () => {
           </div>
         )}
 
-        <select          
+        <select
+          name="isVerified"
+          className='select-container'
+          value={formData.isVerified}
+          onChange={handleChange}
           required
-          class="select-container"
         >
-          <option value="student">Verifiable</option>
-          <option value="staff">Unverifiable</option>
+          <option value="true">Verifiable</option>
+          <option value="false">Not Verifiable</option>
         </select>
 
         <button type="submit">Submit</button>
