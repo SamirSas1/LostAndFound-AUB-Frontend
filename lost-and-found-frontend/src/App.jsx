@@ -31,35 +31,11 @@ function App() {
   return (
     <Router>
       <Layout>
-        <Routes>
-          {/* ✅ Only public route */}
+      <Routes>
           <Route path="/login" element={<Login />} />
-
-          {/* ✅ All other routes are protected */}
-          <Route
-            path="/signup"
-            element={
-              <ProtectedRoute>
-                <Signup />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/forgot-password"
-            element={
-              <ProtectedRoute>
-                <ForgotPass />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/verify"
-            element={
-              <ProtectedRoute>
-                <Verify />
-              </ProtectedRoute>
-            }
-          />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/forgot-password" element={<ForgotPass />} />
+          <Route path="/verify" element={<Verify />} />
           <Route
             path="/search-found"
             element={
@@ -92,8 +68,6 @@ function App() {
               </ProtectedRoute>
             }
           />
-
-          {/* ✅ Optional: Root redirect */}
           <Route
             path="/"
             element={
@@ -102,7 +76,11 @@ function App() {
                 : <Navigate to="/login" replace />
             }
           />
+          
+          {/* ✅ Catch-all route */}
+          <Route path="*" element={<Navigate to="/login" replace />} />
         </Routes>
+
       </Layout>
     </Router>
   );
