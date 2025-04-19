@@ -80,8 +80,9 @@ const Signup = () => {
         <button type="submit">Create Account</button>
 
         <p className="login-redirect">
-          Already have an account? <Link to="/login">Log in here</Link>
-        </p>
+  Already have an account? <Link to="/login">Log in here</Link>
+</p> 
+
       </form>
     </div>
   );

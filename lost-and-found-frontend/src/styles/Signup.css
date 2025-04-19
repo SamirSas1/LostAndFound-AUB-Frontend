@@ -60,15 +60,16 @@
   }
   .login-redirect {
     margin-top: 1.5rem;
-    text-align: center;
     font-size: 0.95rem;
-    color: #333;
-    font-weight: 500;
-    background: none;
+    color: var(--gray) !important;
+    text-align: center;
+    background-color: transparent !important
+
+   
   }
   
   .login-redirect a {
-    color: var(--primary); /* keep the purple accent */
+    color: var(--primary);
     font-weight: 600;
     text-decoration: none;
   }
