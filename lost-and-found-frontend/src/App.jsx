@@ -36,6 +36,19 @@ function App() {
           <Route path="/signup" element={<Signup />} />
           <Route path="/forgot-password" element={<ForgotPass />} />
           <Route path="/verify" element={<Verify />} />
+
+          {/* ✅ All other routes are protected */}
+          <Route path="/signup" element={<Signup />} />
+<Route path="/forgot-password" element={<ForgotPass />} />
+
+          <Route
+            path="/verify"
+            element={
+             
+                <Verify />
+              
+            }
+          />
           <Route
             path="/search-found"
             element={

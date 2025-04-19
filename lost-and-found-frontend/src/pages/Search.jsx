@@ -1,31 +1,20 @@
 import React, { useEffect, useState } from "react";
-import '../styles/Search.css';
+import "../styles/Search.css";
+
 const Search = () => {
   const [items, setItems] = useState([]);
 
   useEffect(() => {
-    // TODO: Replace this with actual API call
-    const mockData = [
-      {
-        id: 1,
-        title: "USB Drive",
-        description: "Black 32GB USB found near the library",
-        timestamp: "2025-04-15 13:42",
-        imageUrl:
-          "https://aub-lostfound-images.s3.eu-west-1.amazonaws.com/found/usb1.jpg",
-      },
-      {
-        id: 2,
-        title: "Water Bottle",
-        description: "Blue reusable bottle left in OSB building",
-        timestamp: "2025-04-15 09:15",
-        imageUrl:
-          "https://aub-lostfound-images.s3.eu-west-1.amazonaws.com/found/bottle2.jpg",
-      },
-    ];
-    setItems(mockData);
-  }, []);
-
+    fetch("https://ieq3dmri5l.execute-api.eu-west-1.amazonaws.com/dev/get-verified-found-items")
+    .then((res) => res.json())
+    .then((data) => {
+      const parsedItems = JSON.parse(data.body); // ✅ manually parse body
+      setItems(parsedItems);
+    })
+    .catch((err) => {
+      console.error("❌ Failed to fetch verified items:", err);
+    });
+}, []);
   return (
     <div className="search-page">
       <h1 className="search-title">Verified Found Items</h1>
@@ -45,4 +34,4 @@ const Search = () => {
   );
 };
 
-export default Search;
+export default Search;

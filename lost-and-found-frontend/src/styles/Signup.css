@@ -58,5 +58,24 @@
   .password-input-wrapper input {
     width: 100%;
   }
+  .login-redirect {
+    margin-top: 1.5rem;
+    font-size: 0.95rem;
+    color: var(--gray) !important;
+    text-align: center;
+    background-color: transparent !important   
+  }
+    
+  .login-redirect a {
+    color: var(--primary);
+    font-weight: 600;
+    text-decoration: none;
+  }
+  
+  .login-redirect a:hover {
+    text-decoration: underline;
+  }
+  
+  
   
   
