@@ -36,28 +36,15 @@ function App() {
           <Route path="/login" element={<Login />} />
 
           {/* ✅ All other routes are protected */}
-          <Route
-            path="/signup"
-            element={
-              <ProtectedRoute>
-                <Signup />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/forgot-password"
-            element={
-              <ProtectedRoute>
-                <ForgotPass />
-              </ProtectedRoute>
-            }
-          />
+          <Route path="/signup" element={<Signup />} />
+<Route path="/forgot-password" element={<ForgotPass />} />
+
           <Route
             path="/verify"
             element={
-              <ProtectedRoute>
+             
                 <Verify />
-              </ProtectedRoute>
+              
             }
           />
           <Route

@@ -54,7 +54,7 @@ const Login = () => {
   };
 
   const goToForgotPassword = () => {
-    navigate("/forgot-password");
+    navigate("/Forgot-Password");
   };
 
   return (
