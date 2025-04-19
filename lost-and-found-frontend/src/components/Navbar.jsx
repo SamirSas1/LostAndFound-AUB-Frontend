@@ -8,11 +8,11 @@ const Navbar = () => {
   // ✅ Get user info from localStorage
   const user = JSON.parse(localStorage.getItem("userInfo"));
 
-  const handleLogout = () => {
-    console.log("Logging out...");
+  const handleLogout = () => {    
     localStorage.removeItem("idToken");
     localStorage.removeItem("userInfo");
     navigate("/login");
+    console.log("Logged out...");
   };
 
   return (
