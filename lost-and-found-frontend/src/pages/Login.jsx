@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { loginCognito } from "../authService";
 import { jwtDecode } from "jwt-decode";
-
 import "../styles/Login.css";
 
 const Login = () => {
@@ -23,9 +22,16 @@ const Login = () => {
 
         console.log("✅ Login success:", userInfo);
 
-        // Store the token + user info
+        // 🧠 Extract role and store everything
+        const role = userInfo["custom:role"];
         localStorage.setItem("idToken", idToken);
         localStorage.setItem("userInfo", JSON.stringify(userInfo));
+        if (role) {
+          localStorage.setItem("userType", role);
+          console.log("✅ userType set at login:", role);
+        } else {
+          console.warn("⚠️ custom:role not found in decoded token.");
+        }
 
         navigate("/search-found");
       },
@@ -38,10 +44,17 @@ const Login = () => {
         user.completeNewPasswordChallenge(newPassword, {}, {
           onSuccess: (result) => {
             const idToken = result.getIdToken().getJwtToken();
-            const userInfo = jwtDecode(idToken);;
+            const userInfo = jwtDecode(idToken);
 
+            const role = userInfo["custom:role"];
             localStorage.setItem("idToken", idToken);
             localStorage.setItem("userInfo", JSON.stringify(userInfo));
+            if (role) {
+              localStorage.setItem("userType", role);
+              console.log("✅ userType set after password reset:", role);
+            } else {
+              console.warn("⚠️ custom:role not found in decoded token.");
+            }
 
             navigate("/search-found");
           },
