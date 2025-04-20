@@ -63,11 +63,12 @@
     font-size: 0.95rem;
     color: var(--gray) !important;
     text-align: center;
-    background-color: transparent !important
-
-   
+    font-size: 0.95rem;
+    color: #333;
+    font-weight: 500;
+    background: none;
   }
-  
+    
   .login-redirect a {
     color: var(--primary);
     font-weight: 600;
@@ -75,7 +76,7 @@
   }
   
   .login-redirect a:hover {
-    text-decoration: underline;
+    text-decoration: underline;
   }
   
   

@@ -11,9 +11,10 @@ const Navbar = () => {
   const handleLogout = () => {    
     localStorage.removeItem("idToken");
     localStorage.removeItem("userInfo");
+    localStorage.removeItem("userType"); // ✅ This line is crucial
     navigate("/login");
     console.log("Logged out...");
-  };
+  };  
 
   return (
     <nav className="navbar">
@@ -24,6 +25,9 @@ const Navbar = () => {
         {/* ✅ Show this only if user is staff */}
         {user?.["custom:role"] === "staff" && (
           <Link to="/upload-found">Upload Found Item</Link>
+        )}
+        {user?.["custom:role"] === "staff" && (
+          <Link to="/staff-dashboard">Staff Dashboard</Link>
         )}
 
         <Link to="/my-items">My Uploads</Link>

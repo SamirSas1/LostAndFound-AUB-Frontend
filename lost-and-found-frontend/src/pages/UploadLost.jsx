@@ -39,18 +39,21 @@ const UploadLost = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const email = getEmailFromToken();
-    if (!email) {
-      alert("You must be logged in to upload a lost item.");
-      return;
-    }
-
-    if (!formData.image) {
-      alert("Please select an image.");
-      return;
-    }
-
     try {
+      const email = getEmailFromToken();
+      console.log("📧 Email from token:", email);
+
+      if (!email) {
+        alert("You must be logged in to upload a lost item.");
+        navigate("/login");
+        return;
+      }
+
+      if (!formData.image) {
+        alert("Please select an image.");
+        return;
+      }
+
       const base64Image = await toBase64(formData.image);
 
       const payload = {
@@ -60,10 +63,14 @@ const UploadLost = () => {
         image: base64Image
       };
 
+      const token = localStorage.getItem("idToken");
+      console.log("🔐 Using token for upload:", token);
+
       const response = await fetch('https://ieq3dmri5l.execute-api.eu-west-1.amazonaws.com/dev/upload-lost-item', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}` // ✅ Send the token to backend
         },
         body: JSON.stringify(payload)
       });
@@ -78,9 +85,10 @@ const UploadLost = () => {
         alert("Upload failed: " + result.error);
       }
 
-    } catch (error) {
-      console.error("Upload error:", error);
-      alert("Something went wrong. Try again.");
+    } catch (err) {
+      console.error("🔥 Unexpected error during submission:", err);
+      alert("You were logged out or something went wrong.");
+      navigate("/login");
     }
   };
 
