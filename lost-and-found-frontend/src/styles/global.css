@@ -19,7 +19,7 @@ body {
 }
 
 a {
-  text-decoration: none;
+  text-decoration: none;                            
   color: var(--primary);
   font-weight: 500;
 }
