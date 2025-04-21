@@ -18,6 +18,7 @@ const Navbar = () => {
 
   return (
     <nav className="navbar">
+      
       <div className="navbar-links">
         <Link to="/search-found">Search Items</Link>
         <Link to="/upload-lost">Upload Lost Item</Link>
@@ -32,14 +33,24 @@ const Navbar = () => {
 
         <Link to="/my-items">My Uploads</Link>
       </div>
+      
 
       {/* ✅ Optional: show user email or name */}
       <div className="navbar-user">
-        {user && <span>{user.name || user.email}</span>}
-        <button onClick={handleLogout}>Logout</button>
-      </div>
+  {user && <span>{user.name || user.email}</span>}
+
+  <button className="theme-toggle" onClick={() => {
+    const isDark = document.body.classList.toggle("dark-mode");
+    localStorage.setItem("theme", isDark ? "dark" : "light");
+  }}>
+    🌓
+  </button>
+
+  <button onClick={handleLogout}>Logout</button>
+</div>
+
     </nav>
   );
 };
 
-export default Navbar;
+export default Navbar;
