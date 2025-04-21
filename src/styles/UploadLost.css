@@ -1,0 +1,120 @@
+.upload-lost-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 90vh;
+    background-color: #f7f7f7;
+  }
+  
+  .upload-lost-form {
+    background: white;
+    padding: 2rem;
+    border-radius: 16px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    width: 90%;
+    max-width: 500px;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .upload-lost-form input {
+    width: 480px;
+  }
+  
+  .upload-lost-form h2 {
+    color: #8e2de2;
+    text-align: center;
+  }
+  
+  .upload-lost-form input,
+  .upload-lost-form textarea,
+  .upload-lost-form button {
+    font-size: 1rem;
+    padding: 0.9rem;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+  }
+  
+  .upload-lost-form textarea {
+    resize: vertical;
+    min-height: 100px;
+  }
+  
+  .upload-lost-form button {
+    background: linear-gradient(to right, #8e2de2, #4a00e0);
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: opacity 0.3s ease;
+  }
+  
+  .upload-lost-form button:hover {
+    opacity: 0.9;
+  }
+  button.close-button {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    background: none;
+    border: none;
+    font-size: 1.8em;
+    color: #888;
+    cursor: pointer;
+    transition: color 0.3s ease;
+    padding: 10px;
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+  
+  button.close-button:hover {
+    color: white;
+  }
+  
+  .upload-lost-form {
+    position: relative;
+  }
+  .close-button {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: #8e2de2;
+    position: absolute;
+    top: 1.2rem;
+    right: 1.5rem;
+    cursor: pointer;
+  }
+  
+  .image-preview-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #f0f0f0;
+    padding: 0.7rem 1rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+  }
+  
+  button.remove-image-btn {
+    background: #ff4d4f;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.85rem;
+  }
+  
+  .remove-image-btn:hover {
+    background: #d9363e;
+  }
+  .select-container {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid #ddd;
+    border-radius: 7px;
+    margin-bottom: 1.25rem;
+    font-size: 1rem;
+    font-family: inherit;
+    transition: border-color 0.2s ease;
+  }
+  
