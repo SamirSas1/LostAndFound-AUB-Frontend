@@ -21,7 +21,7 @@
 }
 
 .upload-lost-form h2 {
-  color: #8e2de2;
+  color: #3e63dd; /* updated primary */
   text-align: center;
 }
 
@@ -42,7 +42,7 @@
 }
 
 .upload-lost-form button {
-  background: linear-gradient(to right, #8e2de2, #4a00e0);
+  background: linear-gradient(to right, #3e63dd, #1c3aad); /* new blue gradient */
   color: white;
   border: none;
   cursor: pointer;

@@ -39,24 +39,33 @@ const UploadLost = () => {
     e.preventDefault();
 
     try {
-      const email = getEmailFromToken();
-      if (!email) {
-        alert("You must be logged in to upload a lost item.");
+      const token = localStorage.getItem("idToken");
+      if (!token) {
+        alert("No token found. Please log in.");
         navigate("/login");
         return;
       }
 
-      const payload = {
+      // ✅ Parse token manually if getEmailFromToken is unreliable
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      const email = payload.email || payload["cognito:username"];
+      console.log("📧 Email from token:", email);
+
+      if (!email) {
+        alert("Invalid token. Please log in.");
+        navigate("/login");
+        return;
+      }
+
+      const payloadToSend = {
         title: formData.itemName,
         description: formData.description,
         email,
       };
 
       if (formData.image) {
-        payload.image = await toBase64(formData.image);
+        payloadToSend.image = await toBase64(formData.image);
       }
-
-      const token = localStorage.getItem("idToken");
 
       const response = await fetch(
         'https://ieq3dmri5l.execute-api.eu-west-1.amazonaws.com/dev/upload-lost-item',
@@ -66,7 +75,7 @@ const UploadLost = () => {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`
           },
-          body: JSON.stringify(payload)
+          body: JSON.stringify(payloadToSend)
         }
       );
 
@@ -74,6 +83,7 @@ const UploadLost = () => {
       console.log('✅ Upload result:', result);
 
       if (response.ok) {
+        // ✅ Index in OpenSearch
         await fetch(
           "https://ieq3dmri5l.execute-api.eu-west-1.amazonaws.com/dev/index-lostfound-opensearch",
           {
@@ -89,13 +99,14 @@ const UploadLost = () => {
         );
 
         alert("✅ Lost item uploaded (pending verification).");
-        navigate('/my-uploads');
+        navigate('/my-items');
       } else {
         alert("❌ Upload failed: " + result.error);
       }
+
     } catch (err) {
       console.error("🔥 Unexpected error during submission:", err);
-      alert("Something went wrong. Please log in again.");
+      alert("You were logged out or something went wrong.");
       navigate("/login");
     }
   };

@@ -47,7 +47,7 @@ const MyUploads = () => {
 
   return (
     <div className="search-page">
-      <h1 className="search-title">📦 My Uploaded Items</h1>
+      <h1 className="search-title"> My Uploaded Items</h1>
 
       {loading ? (
         <p className="search-loading">Loading...</p>

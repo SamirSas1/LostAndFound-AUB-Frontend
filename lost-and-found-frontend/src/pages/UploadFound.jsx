@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getEmailFromToken } from '../utils/tokenUtils';
 import '../styles/UploadLost.css';
 
 const UploadFound = () => {
@@ -16,15 +15,15 @@ const UploadFound = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleImageChange = (e) => {
-    setFormData({ ...formData, image: e.target.files[0] });
+    setFormData((prev) => ({ ...prev, image: e.target.files[0] }));
   };
 
   const handleImageRemove = () => {
-    setFormData({ ...formData, image: null });
+    setFormData((prev) => ({ ...prev, image: null }));
     document.getElementById('imageInput').value = '';
   };
 
@@ -33,30 +32,39 @@ const UploadFound = () => {
       const reader = new FileReader();
       reader.readAsDataURL(file);
       reader.onload = () => resolve(reader.result);
-      reader.onerror = (error) => reject(error);
+      reader.onerror = reject;
     });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const email = getEmailFromToken();
-    const token = localStorage.getItem("idToken");
-
-    if (!email || !token) {
-      alert("You must be logged in to upload a found item.");
-      navigate("/login");
-      return;
-    }
-
-    if (!formData.image) {
-      alert("Please select an image.");
-      return;
-    }
-
     try {
+      const token = localStorage.getItem("idToken");
+      if (!token) {
+        alert("You must be logged in to upload a found item.");
+        navigate("/login");
+        return;
+      }
+
+      // ✅ Decode token manually (fallback if getEmailFromToken fails)
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      const email = payload.email || payload["cognito:username"];
+      console.log("📧 Email from token:", email);
+
+      if (!email) {
+        alert("You must be logged in to upload a found item.");
+        navigate("/login");
+        return;
+      }
+
+      if (!formData.image) {
+        alert("Please select an image.");
+        return;
+      }
+
       const base64Image = await toBase64(formData.image);
 
-      const payload = {
+      const payloadToSend = {
         title: formData.itemName,
         description: formData.description,
         email: email,
@@ -70,7 +78,7 @@ const UploadFound = () => {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`
         },
-        body: JSON.stringify(payload),
+        body: JSON.stringify(payloadToSend),
       });
 
       const result = await response.json();
@@ -90,15 +98,16 @@ const UploadFound = () => {
           })
         });
 
-        alert("Found item uploaded and indexed.");
+        alert("✅ Found item uploaded and indexed.");
         navigate('/my-items');
       } else {
-        alert("Upload failed: " + result.error);
+        alert("❌ Upload failed: " + result.error);
       }
 
     } catch (error) {
       console.error("🔥 Upload error:", error);
       alert("Something went wrong. Please try again.");
+      navigate("/login");
     }
   };
 
