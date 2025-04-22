@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getEmailFromToken } from '../utils/tokenUtils';
-import '../styles/UploadLost.css'; // reuse same style
+import '../styles/UploadLost.css';
 
 const UploadFound = () => {
   const navigate = useNavigate();
@@ -40,8 +40,11 @@ const UploadFound = () => {
     e.preventDefault();
 
     const email = getEmailFromToken();
-    if (!email) {
+    const token = localStorage.getItem("idToken");
+
+    if (!email || !token) {
       alert("You must be logged in to upload a found item.");
+      navigate("/login");
       return;
     }
 
@@ -58,44 +61,50 @@ const UploadFound = () => {
         description: formData.description,
         email: email,
         image: base64Image,
-        isVerified: formData.isVerified === 'true'
+        isVerified: formData.isVerified === 'true',
       };
 
       const response = await fetch('https://ieq3dmri5l.execute-api.eu-west-1.amazonaws.com/dev/upload-found-item', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
         },
-        body: JSON.stringify(payload)
+        body: JSON.stringify(payload),
       });
 
       const result = await response.json();
       console.log('✅ Upload result:', result);
 
       if (response.ok) {
-        alert("Found item uploaded successfully.");
-        navigate('/my-uploads');
+        await fetch("https://ieq3dmri5l.execute-api.eu-west-1.amazonaws.com/dev/index-lostfound-opensearch", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            title: formData.itemName,
+            description: formData.description,
+            timestamp: new Date(formData.date).toISOString(),
+            isVerified: formData.isVerified === 'true'
+          })
+        });
+
+        alert("Found item uploaded and indexed.");
+        navigate('/my-items');
       } else {
         alert("Upload failed: " + result.error);
       }
 
     } catch (error) {
-      console.error("Upload error:", error);
-      alert("Something went wrong. Try again.");
+      console.error("🔥 Upload error:", error);
+      alert("Something went wrong. Please try again.");
     }
   };
 
   return (
     <div className="upload-lost-container">
       <form className="upload-lost-form" onSubmit={handleSubmit}>
-        <button
-          type="button"
-          className="close-button"
-          onClick={() => navigate('/search-lost')}
-        >
-          &times;
-        </button>
-
         <h2>Upload Found Item</h2>
 
         <input
@@ -128,7 +137,6 @@ const UploadFound = () => {
           type="file"
           accept="image/*"
           onChange={handleImageChange}
-          required={!formData.image}
         />
 
         {formData.image && (
@@ -146,7 +154,7 @@ const UploadFound = () => {
 
         <select
           name="isVerified"
-          className='select-container'
+          className="select-container"
           value={formData.isVerified}
           onChange={handleChange}
           required

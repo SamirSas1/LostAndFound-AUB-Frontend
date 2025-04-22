@@ -34,6 +34,15 @@ const Signup = () => {
 
   return (
     <div className="signup-container">
+        <button
+  className="theme-toggle-btn"
+  onClick={() => {
+    const isDark = document.body.classList.toggle("dark-mode");
+    localStorage.setItem("theme", isDark ? "dark" : "light");
+  }}
+>
+  🌓 
+</button>
       <form className="signup-box" onSubmit={handleSignup}>
         <h2>Create Your Account</h2>
 

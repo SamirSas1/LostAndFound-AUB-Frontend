@@ -70,58 +70,67 @@ const Login = () => {
     navigate("/Forgot-Password");
   };
 
+  
   return (
     <div className="login-container">
-      <form className="login-box" onSubmit={handleLogin}>
-        <h2>Welcome Back</h2>
+  <button
+  className="theme-toggle-btn"
+  onClick={() => {
+    const isDark = document.body.classList.toggle("dark-mode");
+    localStorage.setItem("theme", isDark ? "dark" : "light");
+  }}
+>
+  🌓 
+</button>
 
+
+    <form className="login-box" onSubmit={handleLogin}>
+      <h1 className="app-title">Lost and Found AUB</h1>
+      <h2>Welcome Back</h2>
+  
+      <input
+        type="email"
+        placeholder="Email"
+        value={email}
+        required
+        onChange={(e) => setEmail(e.target.value)}
+      />
+  
+      <div className="password-input-wrapper">
         <input
-          type="email"
-          placeholder="Email"
-          value={email}
+          type={showPassword ? "text" : "password"}
+          placeholder="Password"
+          value={password}
           required
-          onChange={(e) => setEmail(e.target.value)}
+          onChange={(e) => setPassword(e.target.value)}
         />
-
-        <div className="password-input-wrapper">
-          <input
-            type={showPassword ? "text" : "password"}
-            placeholder="Password"
-            value={password}
-            required
-            onChange={(e) => setPassword(e.target.value)}
-          />
-          <span
-            className="toggle-password"
-            onClick={() => setShowPassword((prev) => !prev)}
-            style={{
-              cursor: "pointer",
-              position: "absolute",
-              right: "0px",
-              top: "37%",
-              transform: "translateY(-50%)",
-              userSelect: "none"
-            }}
-          >
-            {showPassword ? "🙈" : "👁️"}
-          </span>
-        </div>
-
-        <button type="submit">Login</button>
-
-        <button
-          type="button"
-          className="forgot-password-button"
-          onClick={goToForgotPassword}
+        <span
+          className="toggle-password"
+          onClick={() => setShowPassword((prev) => !prev)}
         >
-          Forgot Password?
-        </button>
+          {showPassword ? "🙈" : "👁️"}
+        </span>
+      </div>
+  
+      <button type="submit" className="login-button">Login</button>
+  
+      <button
+        type="button"
+        className="forgot-password-button"
+        onClick={goToForgotPassword}
+      >
+        Forgot Password?
+      </button>
+  
+      <p className="signup-redirect">
+        Don’t have an account? <Link to="/signup">Sign up here</Link>
+      </p>
+    </form>
+   
 
-        <p className="signup-redirect">
-          Don’t have an account? <Link to="/signup">Sign up here</Link>
-        </p>
-      </form>
-    </div>
+  </div>
+  
+  
   );
 };
 

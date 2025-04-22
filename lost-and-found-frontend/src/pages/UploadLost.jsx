@@ -41,8 +41,6 @@ const UploadLost = () => {
 
     try {
       const email = getEmailFromToken();
-      console.log("📧 Email from token:", email);
-
       if (!email) {
         alert("You must be logged in to upload a lost item.");
         navigate("/login");
@@ -64,13 +62,13 @@ const UploadLost = () => {
       };
 
       const token = localStorage.getItem("idToken");
-      console.log("🔐 Using token for upload:", token);
 
+      // Upload to backend
       const response = await fetch('https://ieq3dmri5l.execute-api.eu-west-1.amazonaws.com/dev/upload-lost-item', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}` // ✅ Send the token to backend
+          Authorization: `Bearer ${token}`
         },
         body: JSON.stringify(payload)
       });
@@ -79,7 +77,21 @@ const UploadLost = () => {
       console.log('✅ Upload result:', result);
 
       if (response.ok) {
-        alert("Lost item uploaded successfully.");
+        // Index as unverified
+        await fetch("https://ieq3dmri5l.execute-api.eu-west-1.amazonaws.com/dev/index-lostfound-opensearch", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            title: formData.itemName,
+            description: formData.description,
+            timestamp: new Date(formData.date).toISOString(),
+            isVerified: false
+          })
+        });
+
+        alert("Lost item uploaded and indexed (not visible in search until verified).");
         navigate('/my-uploads');
       } else {
         alert("Upload failed: " + result.error);
@@ -93,16 +105,8 @@ const UploadLost = () => {
   };
 
   return (
-    <div className="upload-lost-container">
+    <div className="form-container">
       <form className="upload-lost-form" onSubmit={handleSubmit}>
-        <button
-          type="button"
-          className="close-button"
-          onClick={() => navigate('/search-found')}
-        >
-          &times;
-        </button>
-
         <h2>Upload Lost Item</h2>
 
         <input
@@ -141,11 +145,7 @@ const UploadLost = () => {
         {formData.image && (
           <div className="image-preview-actions">
             <p>Selected: {formData.image.name}</p>
-            <button
-              type="button"
-              className="remove-image-btn"
-              onClick={handleImageRemove}
-            >
+            <button type="button" className="remove-image-btn" onClick={handleImageRemove}>
               Remove Image
             </button>
           </div>
