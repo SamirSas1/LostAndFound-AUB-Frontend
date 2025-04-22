@@ -1,17 +1,20 @@
 import React, { useEffect, useState } from "react";
-import "../styles/Search.css"; // You can create StaffDashboard.css if you want to customize
+import "../styles/Search.css"; // or create StaffDashboard.css if needed
 
 const StaffDashboard = () => {
   const [items, setItems] = useState([]);
+  const [filteredItems, setFilteredItems] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [cooldowns, setCooldowns] = useState({}); // ✅ cooldown state
+  const [cooldowns, setCooldowns] = useState({});
+  const [query, setQuery] = useState("");
 
   useEffect(() => {
     fetch("https://ieq3dmri5l.execute-api.eu-west-1.amazonaws.com/dev/get-all-items-for-staff")
       .then((res) => res.json())
       .then((data) => {
-        const parsedItems = Array.isArray(data) ? data : JSON.parse(data.body);
-        setItems(parsedItems);
+        const parsed = Array.isArray(data) ? data : JSON.parse(data.body);
+        setItems(parsed);
+        setFilteredItems(parsed);
         setLoading(false);
       })
       .catch((err) => {
@@ -19,14 +22,32 @@ const StaffDashboard = () => {
         setLoading(false);
       });
   }, []);
+
+  const handleSearch = (e) => {
+    const val = e.target.value;
+    setQuery(val);
+
+    if (!val.trim()) {
+      setFilteredItems(items);
+      return;
+    }
+
+    const lower = val.toLowerCase();
+    const filtered = items.filter(
+      (item) =>
+        item.title?.toLowerCase().includes(lower) ||
+        item.description?.toLowerCase().includes(lower) ||
+        item.userEmail?.toLowerCase().includes(lower)
+    );
+    setFilteredItems(filtered);
+  };
+
   const handleDelete = (itemId) => {
     if (!window.confirm("Are you sure you want to delete this item?")) return;
-  
+
     fetch("https://ieq3dmri5l.execute-api.eu-west-1.amazonaws.com/dev/delete-item", {
       method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ itemId }),
     })
       .then((res) => {
@@ -35,28 +56,23 @@ const StaffDashboard = () => {
       })
       .then(() => {
         alert("🗑 Item deleted successfully");
-        setItems((prev) => prev.filter((item) => item.itemId !== itemId));
+        const updated = items.filter((i) => i.itemId !== itemId);
+        setItems(updated);
+        setFilteredItems(updated);
       })
       .catch((err) => {
         console.error("❌ Delete failed:", err);
         alert("❌ Failed to delete item.");
       });
   };
-  
 
   const handleNotify = (itemId) => {
     const item = items.find((i) => i.itemId === itemId);
-  
-    if (!item) {
-      alert("❌ Item not found");
-      return;
-    }
-  
+    if (!item) return alert("❌ Item not found");
+
     fetch("https://ieq3dmri5l.execute-api.eu-west-1.amazonaws.com/dev/notify-student", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         itemId: item.itemId,
         userEmail: item.userEmail,
@@ -64,9 +80,9 @@ const StaffDashboard = () => {
       }),
     })
       .then((res) => res.json())
-      .then((data) => {
+      .then(() => {
         alert("✅ Notification sent to student!");
-        startCooldown(itemId); // ✅ start cooldown after success
+        startCooldown(itemId);
       })
       .catch((err) => {
         console.error("❌ Notify failed:", err);
@@ -96,15 +112,25 @@ const StaffDashboard = () => {
   return (
     <div className="search-page">
       <h1 className="search-title">📋 All Uploaded Items (Staff View)</h1>
+
+      <div className="search-bar">
+        <input
+          type="text"
+          placeholder="Filter by title, description, or email..."
+          value={query}
+          onChange={handleSearch}
+        />
+      </div>
+
       {loading ? (
         <p>Loading items...</p>
       ) : (
         <div className="item-grid">
-          {items.map((item) => (
+          {filteredItems.map((item) => (
             <div key={item.itemId} className="item-card">
               <img
                 src={
-                  item.imageUrl.startsWith("s3://")
+                  item.imageUrl?.startsWith("s3://")
                     ? item.imageUrl.replace(
                         "s3://aub-lostfound-images/",
                         "https://aub-lostfound-images.s3.eu-west-1.amazonaws.com/"
@@ -113,7 +139,6 @@ const StaffDashboard = () => {
                 }
                 alt={item.title}
               />
-
               <div className="info">
                 <h2>{item.title}</h2>
                 <p><strong>Description:</strong> {item.description}</p>
@@ -121,28 +146,27 @@ const StaffDashboard = () => {
                 <p className="timestamp">{new Date(item.timestamp).toLocaleString()}</p>
 
                 <div className="button-group">
-  {cooldowns[item.itemId] ? (
-    <button className="notify-button" disabled>
-      Checked ({cooldowns[item.itemId]}s)
-    </button>
-  ) : (
-    <button
-      className="notify-button"
-      onClick={() => handleNotify(item.itemId)}
-    >
-      Notify Student
-    </button>
-  )}
+                  {cooldowns[item.itemId] ? (
+                    <button className="notify-button" disabled>
+                      Checked ({cooldowns[item.itemId]}s)
+                    </button>
+                  ) : (
+                    <button
+                      className="notify-button"
+                      onClick={() => handleNotify(item.itemId)}
+                    >
+                      Notify Student
+                    </button>
+                  )}
 
-  <button
-    className="delete-button"
-    onClick={() => handleDelete(item.itemId)}
-    style={{ marginLeft: "10px", backgroundColor: "#ff4d4f", color: "white" }}
-  >
-    Delete
-  </button>
-</div>
-
+                  <button
+                    className="delete-button"
+                    onClick={() => handleDelete(item.itemId)}
+                    style={{ marginLeft: "10px", backgroundColor: "#ff4d4f", color: "white" }}
+                  >
+                    Delete
+                  </button>
+                </div>
               </div>
             </div>
           ))}

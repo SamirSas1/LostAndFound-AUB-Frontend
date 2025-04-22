@@ -1,28 +1,46 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "../styles/Search.css";
 
 const Search = () => {
   const [query, setQuery] = useState("");
-  const [items, setItems] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [allItems, setAllItems] = useState([]); // all verified items from backend
+  const [filteredItems, setFilteredItems] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const handleSearch = () => {
-    if (!query.trim()) return;
-    setLoading(true);
-
-    fetch(`https://ieq3dmri5l.execute-api.eu-west-1.amazonaws.com/dev/index-lostfound-opensearch?q=${encodeURIComponent(query)}`)
+  useEffect(() => {
+    // Load all verified items once
+    fetch("https://ieq3dmri5l.execute-api.eu-west-1.amazonaws.com/dev/index-lostfound-opensearch")
       .then((res) => res.json())
       .then((data) => {
         const parsed = Array.isArray(data) ? data : JSON.parse(data.body);
-        // Filter only verified items
         const verified = parsed.filter((item) => item.isVerified === true);
-        setItems(verified);
+        setAllItems(verified);
+        setFilteredItems(verified); // show all initially
         setLoading(false);
       })
       .catch((err) => {
-        console.error("❌ Failed to fetch search results:", err);
+        console.error("❌ Failed to fetch verified items:", err);
         setLoading(false);
       });
+  }, []);
+
+  const handleSearch = (e) => {
+    const val = e.target.value;
+    setQuery(val);
+
+    if (!val.trim()) {
+      setFilteredItems(allItems);
+      return;
+    }
+
+    const lowerQuery = val.toLowerCase();
+    const filtered = allItems.filter(
+      (item) =>
+        item.title?.toLowerCase().includes(lowerQuery) ||
+        item.description?.toLowerCase().includes(lowerQuery)
+    );
+
+    setFilteredItems(filtered);
   };
 
   return (
@@ -33,16 +51,15 @@ const Search = () => {
           type="text"
           placeholder="Search by keyword..."
           value={query}
-          onChange={(e) => setQuery(e.target.value)}
+          onChange={handleSearch}
         />
-        <button onClick={handleSearch}>Search</button>
       </div>
 
       {loading ? (
         <p>Loading...</p>
       ) : (
         <div className="item-grid">
-          {items.map((item, index) => (
+          {filteredItems.map((item, index) => (
             <div key={index} className="item-card">
               <img
                 src={
