@@ -113,6 +113,10 @@ const UploadLost = () => {
 
   return (
     <div className="upload-lost-container">
+      <p className="upload-note">
+  Upload the item you lost. You’ll receive an email if a match is found — but this email may not always be accurate. Please check verified found items in the <strong>Search</strong> section and visit the <strong>Lost and Found office</strong> to inquire about unverifiable ones.
+</p>
+
       <form className="upload-lost-form" onSubmit={handleSubmit}>
         <h2>Upload Lost Item</h2>
 

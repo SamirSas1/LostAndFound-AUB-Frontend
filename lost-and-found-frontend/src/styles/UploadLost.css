@@ -1,17 +1,33 @@
 .upload-lost-container {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   min-height: 90vh;
-  background-color: #f7f7f7;
-  padding: 2rem;
+  background-color: var(--bg);
+  padding: 0rem;
+  gap: 1rem;
+}
+
+.upload-note {
+  font-size: 0.9rem;
+  color: var(--text);
+  background-color: #fff8e1;
+  padding: 1rem 1.2rem;
+  border: 1px solid #ffc107;
+  border-radius: 12px;
+  max-width: 500px;
+  width: 100%;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  line-height: 1.6;
 }
 
 .upload-lost-form {
-  background: white;
+  background: var(--card-bg);
   padding: 2rem;
   border-radius: 16px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow);
   width: 100%;
   max-width: 500px;
   display: flex;
@@ -21,7 +37,7 @@
 }
 
 .upload-lost-form h2 {
-  color: #3e63dd; /* updated primary */
+  color: var(--primary);
   text-align: center;
 }
 
@@ -34,6 +50,14 @@
   border: 1px solid #ccc;
   width: 100%;
   box-sizing: border-box;
+  background-color: white;
+  color: #000;
+  transition: all 0.3s ease;
+}
+
+.upload-lost-form input::placeholder,
+.upload-lost-form textarea::placeholder {
+  color: #888;
 }
 
 .upload-lost-form textarea {
@@ -42,7 +66,7 @@
 }
 
 .upload-lost-form button {
-  background: linear-gradient(to right, #3e63dd, #1c3aad); /* new blue gradient */
+  background: linear-gradient(to right, #3e63dd, #1c3aad);
   color: white;
   border: none;
   cursor: pointer;
@@ -75,3 +99,27 @@
 .remove-image-btn:hover {
   background-color: #d9363e;
 }
+
+/* Dark Mode Support */
+body.dark-mode .upload-lost-form {
+  background: var(--card-bg);
+}
+
+body.dark-mode .upload-lost-form input,
+body.dark-mode .upload-lost-form textarea {
+  background-color: #2b2b2b;
+  color: #eee;
+  border: 1px solid #555;
+}
+
+body.dark-mode .upload-lost-form input::placeholder,
+body.dark-mode .upload-lost-form textarea::placeholder {
+  color: #999;
+}
+/* Dark mode override for upload note */
+body.dark-mode .upload-note {
+  color: #111; /* Or #222 for softer black */
+  background-color: #ffe9a7;
+  border: 1px solid #ffb100;
+}
+

@@ -54,7 +54,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/forgot-password" element={<ForgotPass />} />
-          <Route path="/verify" element={<Verify />} />
+          <Route path="/veri  fy" element={<Verify />} />
 
           {/* ✅ Protected Routes */}
           <Route
