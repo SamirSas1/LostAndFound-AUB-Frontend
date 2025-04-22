@@ -2,20 +2,18 @@ import React, { useEffect, useState } from "react";
 import "../styles/Search.css";
 
 const Search = () => {
-  const [query, setQuery] = useState("");
-  const [allItems, setAllItems] = useState([]); // all verified items from backend
+  const [items, setItems] = useState([]);
   const [filteredItems, setFilteredItems] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [query, setQuery] = useState("");
 
   useEffect(() => {
-    // Load all verified items once
-    fetch("https://ieq3dmri5l.execute-api.eu-west-1.amazonaws.com/dev/index-lostfound-opensearch")
+    fetch("https://ieq3dmri5l.execute-api.eu-west-1.amazonaws.com/dev/get-verified-found-items")
       .then((res) => res.json())
       .then((data) => {
         const parsed = Array.isArray(data) ? data : JSON.parse(data.body);
-        const verified = parsed.filter((item) => item.isVerified === true);
-        setAllItems(verified);
-        setFilteredItems(verified); // show all initially
+        setItems(parsed);
+        setFilteredItems(parsed);
         setLoading(false);
       })
       .catch((err) => {
@@ -29,38 +27,38 @@ const Search = () => {
     setQuery(val);
 
     if (!val.trim()) {
-      setFilteredItems(allItems);
+      setFilteredItems(items);
       return;
     }
 
-    const lowerQuery = val.toLowerCase();
-    const filtered = allItems.filter(
+    const lower = val.toLowerCase();
+    const filtered = items.filter(
       (item) =>
-        item.title?.toLowerCase().includes(lowerQuery) ||
-        item.description?.toLowerCase().includes(lowerQuery)
+        item.title?.toLowerCase().includes(lower) ||
+        item.description?.toLowerCase().includes(lower)
     );
-
     setFilteredItems(filtered);
   };
 
   return (
     <div className="search-page">
       <h1 className="search-title">🔍 Search Found Items</h1>
+
       <div className="search-bar">
         <input
           type="text"
-          placeholder="Search by keyword..."
+          placeholder="Search by title or description..."
           value={query}
           onChange={handleSearch}
         />
       </div>
 
       {loading ? (
-        <p>Loading...</p>
+        <p>Loading items...</p>
       ) : (
         <div className="item-grid">
-          {filteredItems.map((item, index) => (
-            <div key={index} className="item-card">
+          {filteredItems.map((item) => (
+            <div key={item.itemId} className="item-card">
               <img
                 src={
                   item.imageUrl?.startsWith("s3://")
@@ -71,10 +69,14 @@ const Search = () => {
                     : item.imageUrl || "https://via.placeholder.com/150"
                 }
                 alt={item.title}
+                onError={(e) => {
+                  e.target.onerror = null;
+                  e.target.src = "https://via.placeholder.com/150";
+                }}
               />
               <div className="info">
                 <h2>{item.title}</h2>
-                <p>{item.description}</p>
+                <p><strong>Description:</strong> {item.description}</p>
                 <p className="timestamp">{new Date(item.timestamp).toLocaleString()}</p>
               </div>
             </div>
