@@ -1,14 +1,15 @@
-/* global.css */
+/* ========== GLOBAL STYLES ========== */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
 
 :root {
-  --primary:  #ac19e1;
-  --bg: #f6f6f9;
+  --primary: #3e63dd;
+  --primary-hover: #1c3aad;
+  --bg: #f5f6fa;
   --text: #2d2d2d;
-  --gray: #999;
-  --card-bg: #fff;
+  --gray: #777;
+  --card-bg: #ffffff;
   --radius: 16px;
-  --shadow: 0 12px 30px rgba(108, 99, 255, 0.15);
+  --shadow: 0 12px 30px rgba(62, 99, 221, 0.15);
 }
 
 body {
@@ -19,7 +20,7 @@ body {
 }
 
 a {
-  text-decoration: none;                            
+  text-decoration: none;
   color: var(--primary);
   font-weight: 500;
 }
@@ -42,32 +43,30 @@ button {
 }
 
 button:hover {
-  background: #580776;;
-}
-body.dark-mode {
-  --bg: #1a1a1a;
-  --text: #f0f0f0;
-  --card-bg: #262626;
-  --gray: #ccc;
-  --shadow: 0 12px 30px rgba(255, 255, 255, 0.05);
+  background: var(--primary-hover);
 }
 
 body.dark-mode {
+  --bg: #1a1a1a;
+  --text: #f0f0f0;
+  --gray: #ccc;
+  --card-bg: #262626;
+  --shadow: 0 12px 30px rgba(255, 255, 255, 0.05);
   background: var(--bg);
   color: var(--text);
 }
 
 body.dark-mode a {
-  color: #d173ff;
+  color: #89aaff;
 }
 
 body.dark-mode button {
-  background: #d173ff;
+  background: #4b63ff;
   color: #fff;
 }
 
 body.dark-mode button:hover {
-  background: #a03bd6;
+  background: #3e4dc9;
 }
 
 body.dark-mode .navbar {
@@ -76,11 +75,11 @@ body.dark-mode .navbar {
 }
 
 body.dark-mode .navbar-links a {
-  color: #d173ff;
+  color: #89aaff;
 }
 
 body.dark-mode .navbar-links a:hover {
-  color: #f19cff;
+  color: #aec9ff;
 }
 
 body.dark-mode .navbar-user span {
@@ -91,6 +90,8 @@ body.dark-mode .form-container {
   background-color: #1e1e1e;
   box-shadow: 0 0 20px rgba(255, 255, 255, 0.05);
 }
+
+/* ========== FORM CONTAINER ========== */
 .form-container {
   background-color: var(--card-bg);
   padding: 2rem;
@@ -118,13 +119,14 @@ body.dark-mode .form-container {
   border: 1px solid #ccc;
   font-size: 1rem;
   transition: all 0.3s ease;
+  background-color: white;
 }
 
 .form-container input:focus,
 .form-container textarea:focus {
   outline: none;
   border-color: var(--primary);
-  box-shadow: 0 0 0 2px rgba(172, 25, 225, 0.15);
+  box-shadow: 0 0 0 2px rgba(62, 99, 221, 0.15);
 }
 
 .form-container button[type="submit"] {
@@ -138,10 +140,10 @@ body.dark-mode .form-container {
 }
 
 .form-container button[type="submit"]:hover {
-  background-color: #9216be;
+  background-color: var(--primary-hover);
 }
 
-
+/* DARK MODE INPUTS */
 body.dark-mode input,
 body.dark-mode textarea {
   background-color: #2b2b2b;
@@ -161,9 +163,9 @@ body.dark-mode input[type="file"] {
 }
 
 body.dark-mode button[type="submit"] {
-  background-color: #d173ff;
+  background-color: #4b63ff;
 }
 
 body.dark-mode button[type="submit"]:hover {
-  background-color: #a03bd6;
+  background-color: #3e4dc9;
 }

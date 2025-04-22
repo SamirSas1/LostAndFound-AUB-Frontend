@@ -72,66 +72,66 @@ const Login = () => {
 
   
   return (
-    <div className="login-container">
-  <button
-  className="theme-toggle-btn"
-  onClick={() => {
-    const isDark = document.body.classList.toggle("dark-mode");
-    localStorage.setItem("theme", isDark ? "dark" : "light");
-  }}
->
-  🌓 
-</button>
-
-
-    <form className="login-box" onSubmit={handleLogin}>
-      <h1 className="app-title">Lost and Found AUB</h1>
-      <h2>Welcome Back</h2>
-  
-      <input
-        type="email"
-        placeholder="Email"
-        value={email}
-        required
-        onChange={(e) => setEmail(e.target.value)}
-      />
-  
-      <div className="password-input-wrapper">
-        <input
-          type={showPassword ? "text" : "password"}
-          placeholder="Password"
-          value={password}
-          required
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <span
-          className="toggle-password"
-          onClick={() => setShowPassword((prev) => !prev)}
-        >
-          {showPassword ? "🙈" : "👁️"}
-        </span>
-      </div>
-  
-      <button type="submit" className="login-button">Login</button>
-  
+    <div className="login-la-container">
       <button
-        type="button"
-        className="forgot-password-button"
-        onClick={goToForgotPassword}
+        className="login-la-theme-toggle-btn"
+        onClick={() => {
+          const isDark = document.body.classList.toggle("dark-mode");
+          localStorage.setItem("theme", isDark ? "dark" : "light");
+        }}
       >
-        Forgot Password?
+        🌓
       </button>
-  
-      <p className="signup-redirect">
-        Don’t have an account? <Link to="/signup">Sign up here</Link>
-      </p>
-    </form>
-   
 
-  </div>
-  
-  
+      <form className="login-la-box" onSubmit={handleLogin}>
+        <h1 className="login-la-title">Lost and Found AUB</h1>
+        <h2 className="login-la-subtitle">Welcome Back</h2>
+
+        <input
+          type="email"
+          placeholder="Email"
+          value={email}
+          required
+          onChange={(e) => setEmail(e.target.value)}
+          className="login-la-input"
+        />
+
+        <div className="login-la-password-wrapper">
+          <input
+            type={showPassword ? "text" : "password"}
+            placeholder="Password"
+            value={password}
+            required
+            onChange={(e) => setPassword(e.target.value)}
+            className="login-la-password-input"
+          />
+          <span
+            className="login-la-toggle-password"
+            onClick={() => setShowPassword((prev) => !prev)}
+            role="button"
+            aria-label="Toggle password visibility"
+          >
+            {showPassword ? "🙈" : "👁️"}
+          </span>
+        </div>
+
+        <button type="submit" className="login-la-button">Login</button>
+
+        <button
+          type="button"
+          className="login-la-forgot-password"
+          onClick={goToForgotPassword}
+        >
+          Forgot Password?
+        </button>
+
+        <p className="login-la-signup-text">
+          Don’t have an account? <Link to="/signup">Sign up here</Link>
+        </p>
+      </form>
+    </div>
   );
 };
+
 
 export default Login;

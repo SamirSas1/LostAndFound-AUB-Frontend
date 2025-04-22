@@ -15,26 +15,25 @@ const UploadLost = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleImageChange = (e) => {
-    setFormData({ ...formData, image: e.target.files[0] });
+    setFormData((prev) => ({ ...prev, image: e.target.files[0] }));
   };
 
   const handleImageRemove = () => {
-    setFormData({ ...formData, image: null });
+    setFormData((prev) => ({ ...prev, image: null }));
     document.getElementById('imageInput').value = '';
   };
 
-  const toBase64 = (file) => {
-    return new Promise((resolve, reject) => {
+  const toBase64 = (file) =>
+    new Promise((resolve, reject) => {
       const reader = new FileReader();
       reader.readAsDataURL(file);
       reader.onload = () => resolve(reader.result);
-      reader.onerror = (error) => reject(error);
+      reader.onerror = reject;
     });
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -47,65 +46,62 @@ const UploadLost = () => {
         return;
       }
 
-      if (!formData.image) {
-        alert("Please select an image.");
-        return;
-      }
-
-      const base64Image = await toBase64(formData.image);
-
       const payload = {
         title: formData.itemName,
         description: formData.description,
-        email: email,
-        image: base64Image
+        email,
       };
+
+      if (formData.image) {
+        payload.image = await toBase64(formData.image);
+      }
 
       const token = localStorage.getItem("idToken");
 
-      // Upload to backend
-      const response = await fetch('https://ieq3dmri5l.execute-api.eu-west-1.amazonaws.com/dev/upload-lost-item', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`
-        },
-        body: JSON.stringify(payload)
-      });
+      const response = await fetch(
+        'https://ieq3dmri5l.execute-api.eu-west-1.amazonaws.com/dev/upload-lost-item',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+          },
+          body: JSON.stringify(payload)
+        }
+      );
 
       const result = await response.json();
       console.log('✅ Upload result:', result);
 
       if (response.ok) {
-        // Index as unverified
-        await fetch("https://ieq3dmri5l.execute-api.eu-west-1.amazonaws.com/dev/index-lostfound-opensearch", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            title: formData.itemName,
-            description: formData.description,
-            timestamp: new Date(formData.date).toISOString(),
-            isVerified: false
-          })
-        });
+        await fetch(
+          "https://ieq3dmri5l.execute-api.eu-west-1.amazonaws.com/dev/index-lostfound-opensearch",
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              title: formData.itemName,
+              description: formData.description,
+              timestamp: new Date(formData.date).toISOString(),
+              isVerified: false
+            })
+          }
+        );
 
-        alert("Lost item uploaded and indexed (not visible in search until verified).");
+        alert("✅ Lost item uploaded (pending verification).");
         navigate('/my-uploads');
       } else {
-        alert("Upload failed: " + result.error);
+        alert("❌ Upload failed: " + result.error);
       }
-
     } catch (err) {
       console.error("🔥 Unexpected error during submission:", err);
-      alert("You were logged out or something went wrong.");
+      alert("Something went wrong. Please log in again.");
       navigate("/login");
     }
   };
 
   return (
-    <div className="form-container">
+    <div className="upload-lost-container">
       <form className="upload-lost-form" onSubmit={handleSubmit}>
         <h2>Upload Lost Item</h2>
 
@@ -139,13 +135,16 @@ const UploadLost = () => {
           type="file"
           accept="image/*"
           onChange={handleImageChange}
-          required={!formData.image}
         />
 
         {formData.image && (
           <div className="image-preview-actions">
             <p>Selected: {formData.image.name}</p>
-            <button type="button" className="remove-image-btn" onClick={handleImageRemove}>
+            <button
+              type="button"
+              className="remove-image-btn"
+              onClick={handleImageRemove}
+            >
               Remove Image
             </button>
           </div>

@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { BrowserRouter as Router, Routes, Route, useLocation, Navigate } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, useLocation, Navigate, Outlet } from "react-router-dom";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Search from "./pages/Search";
@@ -12,17 +12,15 @@ import Verify from "./pages/verify";
 import ProtectedRoute from "./components/ProtectedRoute";
 import StaffDashboard from "./pages/StaffDashboard";
 
-const Layout = ({ children }) => {
+// ✅ Layout wrapper that conditionally hides Navbar
+const Layout = () => {
   const location = useLocation();
-  const hideNavbar =
-    location.pathname === "/login" ||
-    location.pathname === "/signup" ||
-    location.pathname === "/forgot-password";
+  const hideNavbar = ["/login", "/signup", "/Forgot-Password", "/verify"].includes(location.pathname);
 
   return (
     <>
       {!hideNavbar && <Navbar />}
-      {children}
+      <Outlet />
     </>
   );
 };
@@ -45,18 +43,18 @@ function App() {
       }
     }
   }, []);
-  
 
   return (
     <Router>
-      <Layout>
-        <Routes>
+      <Routes>
+        <Route element={<Layout />}>
+          {/* Public routes */}
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/forgot-password" element={<ForgotPass />} />
           <Route path="/verify" element={<Verify />} />
 
-          {/* ✅ Protected Routes */}
+          {/* Protected Routes */}
           <Route
             path="/search-found"
             element={
@@ -95,9 +93,10 @@ function App() {
               <ProtectedRoute>
                 <StaffDashboard />
               </ProtectedRoute>
-            }
-/>
-          {/* ✅ Root redirect based on login */}
+            }
+          />
+
+          {/* Home redirect */}
           <Route
             path="/"
             element={
@@ -107,10 +106,10 @@ function App() {
             }
           />
 
-          {/* ✅ Catch-all redirect */}
+          {/* Catch-all fallback */}
           <Route path="*" element={<Navigate to="/login" replace />} />
-        </Routes>
-      </Layout>
+        </Route>
+      </Routes>
     </Router>
   );
 }

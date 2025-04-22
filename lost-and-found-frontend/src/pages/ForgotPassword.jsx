@@ -42,24 +42,29 @@ const ForgotPassword = () => {
   };
 
   return (
-    <div className="forgot-password-container">
+    <div className="forgot-la-container">
       <form
-        className="forgot-password-card"
+        className="forgot-la-card"
         onSubmit={step === 1 ? handleSendCode : handleResetPassword}
       >
-        <h2 className="title">Reset Password</h2>
+        <h2 className="forgot-la-title">Reset Password</h2>
 
         {step === 1 && (
           <>
-            <p className="subtitle">Enter your email to receive a reset code</p>
+            <p className="forgot-la-subtitle">
+              Enter your email to receive a reset code
+            </p>
             <input
               type="email"
+              className="forgot-la-input"
               placeholder="Email"
               value={email}
               required
               onChange={(e) => setEmail(e.target.value)}
             />
-            <button type="submit">Send Reset Code</button>
+            <button type="submit" className="forgot-la-button">
+              Send Reset Code
+            </button>
           </>
         )}
 
@@ -67,6 +72,7 @@ const ForgotPassword = () => {
           <>
             <input
               type="text"
+              className="forgot-la-input"
               placeholder="Verification Code"
               value={code}
               required
@@ -74,20 +80,23 @@ const ForgotPassword = () => {
             />
             <input
               type="password"
+              className="forgot-la-input"
               placeholder="New Password"
               value={newPassword}
               required
               onChange={(e) => setNewPassword(e.target.value)}
             />
-            <button type="submit">Reset Password</button>
+            <button type="submit" className="forgot-la-button">
+              Reset Password
+            </button>
           </>
         )}
 
-        <p className="back-to-login">Remember your password?</p>
+        <p className="forgot-la-redirect-label">Remember your password?</p>
         <button
           type="button"
-          className="login-redirect"
-          onClick={() => navigate('/login')}
+          className="forgot-la-redirect-button"
+          onClick={() => navigate("/login")}
         >
           Login here
         </button>

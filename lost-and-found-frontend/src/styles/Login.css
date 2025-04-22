@@ -1,4 +1,5 @@
-.login-container {
+/* ========== LOGIN PAGE ========== */
+.login-la-container {
   min-height: 100vh;
   display: flex;
   justify-content: center;
@@ -7,7 +8,7 @@
   padding: 2rem;
 }
 
-.login-box {
+.login-la-box {
   background: var(--card-bg);
   padding: 3rem 2.5rem;
   border-radius: var(--radius);
@@ -17,10 +18,10 @@
   display: flex;
   align-items: center;
   flex-direction: column;
-  animation: fadeIn 0.5s ease-in-out;
+  animation: loginLaFadeIn 0.5s ease-in-out;
 }
 
-@keyframes fadeIn {
+@keyframes loginLaFadeIn {
   from {
     opacity: 0;
     transform: translateY(10px);
@@ -31,21 +32,34 @@
   }
 }
 
-.app-title {
-  font-size: 1.8rem;
+.login-la-title {
+  font-size: 1.9rem;
   font-weight: 700;
   color: var(--primary);
   margin-bottom: 0.25rem;
+  animation: loginLaPopIn 0.6s ease;
 }
 
-.login-box h2 {
+@keyframes loginLaPopIn {
+  from {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.login-la-subtitle {
   text-align: center;
   margin-bottom: 2rem;
   font-size: 1.2rem;
   color: var(--gray);
 }
 
-.login-box input {
+.login-la-input,
+.login-la-password-input {
   width: 100%;
   padding: 12px 16px;
   border: 1px solid #ccc;
@@ -54,41 +68,45 @@
   font-size: 1rem;
   font-family: inherit;
   transition: border-color 0.3s ease, background 0.3s ease;
-  box-sizing: border-box;
   background-color: white;
+  box-sizing: border-box;
 }
 
-.login-box input:focus {
+.login-la-input:focus,
+.login-la-password-input:focus {
   outline: none;
   border-color: var(--primary);
-  box-shadow: 0 0 0 2px rgba(172, 25, 225, 0.2);
+  box-shadow: 0 0 0 2px rgba(62, 99, 221, 0.2);
 }
 
-.password-input-wrapper {
+.login-la-password-wrapper {
   position: relative;
-
-  padding-left: 15%;
+  width: 100%;
+  margin-bottom: 1rem;
 }
 
-.password-input-wrapper input {
-  padding-right: 40px;
+.login-la-password-input {
+  padding-right: 44px;
 }
 
-.toggle-password {
+.login-la-toggle-password {
   position: absolute;
-  right: 12px;
-  top: 35%;
+  top: 50%;
+  right: 16px;
   transform: translateY(-50%);
   cursor: pointer;
-  font-size: 1.1rem;
+  font-size: 1.25rem;
+  color: var(--primary);
   transition: transform 0.2s ease;
+  user-select: none;
+  line-height: 1;
 }
 
-.toggle-password:hover {
+.login-la-toggle-password:hover {
   transform: translateY(-50%) scale(1.1);
 }
 
-.login-box button {
+.login-la-button {
   width: 100%;
   font-size: 1rem;
   padding: 12px;
@@ -97,14 +115,16 @@
   background-color: var(--primary);
   color: white;
   border: none;
-  transition: background 0.3s ease;
+  transition: background 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-.login-box button:hover {
-  background-color: #9216be;
+.login-la-button:hover {
+  background-color: var(--primary-hover);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
-.forgot-password-button {
+.login-la-forgot-password {
   border: none;
   background: none;
   margin-top: 1rem;
@@ -114,38 +134,43 @@
   cursor: pointer;
 }
 
-.signup-redirect {
+.login-la-signup-text {
   margin-top: 1.5rem;
   font-size: 0.95rem;
   color: var(--gray);
   text-align: center;
 }
 
-.signup-redirect a {
+.login-la-signup-text a {
   color: var(--primary);
   font-weight: 500;
   text-decoration: underline;
 }
 
-/* 🌙 DARK MODE */
-body.dark-mode .login-box {
+/* ========== DARK MODE ========== */
+body.dark-mode .login-la-box {
   background-color: #1e1e1e;
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.05);
 }
 
-body.dark-mode .login-box input {
+body.dark-mode .login-la-input,
+body.dark-mode .login-la-password-input {
   background-color: #2c2c2c;
   color: #f2f2f2;
   border: 1px solid #555;
 }
 
-body.dark-mode .login-box input::placeholder {
+body.dark-mode .login-la-input::placeholder,
+body.dark-mode .login-la-password-input::placeholder {
   color: #aaa;
 }
 
-body.dark-mode .login-box h2 {
+body.dark-mode .login-la-subtitle {
   color: #ccc;
 }
-.theme-toggle-btn {
+
+/* ========== THEME TOGGLE BUTTON ========== */
+.login-la-theme-toggle-btn {
   position: fixed;
   top: 20px;
   right: 20px;
@@ -159,8 +184,8 @@ body.dark-mode .login-box h2 {
   transition: all 0.3s ease;
 }
 
-body.dark-mode .theme-toggle-btn {
+body.dark-mode .login-la-theme-toggle-btn {
   background: #262626;
   color: #f2f2f2;
-  border-color: #d173ff;
+  border-color: #4b63ff;
 }

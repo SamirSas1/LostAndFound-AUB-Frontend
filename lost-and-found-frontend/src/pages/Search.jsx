@@ -42,7 +42,7 @@ const Search = () => {
 
   return (
     <div className="search-page">
-      <h1 className="search-title">🔍 Search Found Items</h1>
+      <h1 className="search-title"> Search Found Items</h1>
 
       <div className="search-bar">
         <input
@@ -50,11 +50,14 @@ const Search = () => {
           placeholder="Search by title or description..."
           value={query}
           onChange={handleSearch}
+          className="search-input"
         />
       </div>
 
       {loading ? (
-        <p>Loading items...</p>
+        <p className="search-loading">Loading items...</p>
+      ) : filteredItems.length === 0 ? (
+        <p className="no-results">No matching items found.</p>
       ) : (
         <div className="item-grid">
           {filteredItems.map((item) => (
@@ -77,7 +80,9 @@ const Search = () => {
               <div className="info">
                 <h2>{item.title}</h2>
                 <p><strong>Description:</strong> {item.description}</p>
-                <p className="timestamp">{new Date(item.timestamp).toLocaleString()}</p>
+                <p className="timestamp">
+                  <strong>Uploaded:</strong> {new Date(item.timestamp).toLocaleString()}
+                </p>
               </div>
             </div>
           ))}

@@ -22,7 +22,6 @@ const Signup = () => {
       (result) => {
         console.log("✅ Signup success:", result);
         alert("Account created! Check your email to verify.");
-        // ✅ Pass email to /verify
         navigate("/verify", { state: { email } });
       },
       (err) => {
@@ -33,18 +32,18 @@ const Signup = () => {
   };
 
   return (
-    <div className="signup-container">
-        <button
-  className="theme-toggle-btn"
-  onClick={() => {
-    const isDark = document.body.classList.toggle("dark-mode");
-    localStorage.setItem("theme", isDark ? "dark" : "light");
-  }}
->
-  🌓 
-</button>
-      <form className="signup-box" onSubmit={handleSignup}>
-        <h2>Create Your Account</h2>
+    <div className="login-la-container">
+      <button
+        className="login-la-theme-toggle-btn"
+        onClick={() => {
+          const isDark = document.body.classList.toggle("dark-mode");
+          localStorage.setItem("theme", isDark ? "dark" : "light");
+        }}
+      >
+        🌓
+      </button>
+      <form className="login-la-box" onSubmit={handleSignup}>
+        <h2 className="login-la-title">Create Your Account</h2>
 
         <input
           type="text"
@@ -52,6 +51,7 @@ const Signup = () => {
           value={name}
           required
           onChange={(e) => setName(e.target.value)}
+          className="login-la-input"
         />
 
         <input
@@ -60,38 +60,31 @@ const Signup = () => {
           value={email}
           required
           onChange={(e) => setEmail(e.target.value)}
+          className="login-la-input"
         />
 
-        <div className="password-input-wrapper">
+        <div className="login-la-password-wrapper">
           <input
             type={showPassword ? "text" : "password"}
             placeholder="Password"
             value={password}
             required
             onChange={(e) => setPassword(e.target.value)}
+            className="login-la-password-input"
           />
           <span
-            className="toggle-password"
+            className="login-la-toggle-password"
             onClick={() => setShowPassword((prev) => !prev)}
-            style={{
-              cursor: "pointer",
-              position: "absolute",
-              right: "0px",
-              top: "37%",
-              transform: "translateY(-50%)",
-              userSelect: "none"
-            }}
           >
             {showPassword ? "🙈" : "👁️"}
           </span>
         </div>
 
-        <button type="submit">Create Account</button>
+        <button type="submit" className="login-la-button">Create Account</button>
 
-        <p className="login-redirect">
-  Already have an account? <Link to="/login">Log in here</Link>
-</p> 
-
+        <p className="login-la-redirect">
+          Already have an account? <Link to="/login">Log in here</Link>
+        </p>
       </form>
     </div>
   );

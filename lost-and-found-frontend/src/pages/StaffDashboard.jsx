@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import "../styles/Search.css"; // or create StaffDashboard.css if needed
+import "../styles/Search.css";
 
 const StaffDashboard = () => {
   const [items, setItems] = useState([]);
@@ -111,11 +111,12 @@ const StaffDashboard = () => {
 
   return (
     <div className="search-page">
-      <h1 className="search-title">📋 All Uploaded Items (Staff View)</h1>
+      <h1 className="search-title"> All Uploaded Items (Staff View)</h1>
 
       <div className="search-bar">
         <input
           type="text"
+          className="search-input"
           placeholder="Filter by title, description, or email..."
           value={query}
           onChange={handleSearch}
@@ -123,7 +124,9 @@ const StaffDashboard = () => {
       </div>
 
       {loading ? (
-        <p>Loading items...</p>
+        <p className="search-loading">Loading items...</p>
+      ) : filteredItems.length === 0 ? (
+        <p className="no-results">No matching items found.</p>
       ) : (
         <div className="item-grid">
           {filteredItems.map((item) => (
@@ -135,7 +138,7 @@ const StaffDashboard = () => {
                         "s3://aub-lostfound-images/",
                         "https://aub-lostfound-images.s3.eu-west-1.amazonaws.com/"
                       )
-                    : item.imageUrl
+                    : item.imageUrl || "https://via.placeholder.com/300x200?text=No+Image"
                 }
                 alt={item.title}
               />
@@ -162,7 +165,6 @@ const StaffDashboard = () => {
                   <button
                     className="delete-button"
                     onClick={() => handleDelete(item.itemId)}
-                    style={{ marginLeft: "10px", backgroundColor: "#ff4d4f", color: "white" }}
                   >
                     Delete
                   </button>

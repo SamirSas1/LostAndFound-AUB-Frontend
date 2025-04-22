@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import "../styles/Search.css"; // Assuming consistent styling
 
 const MyUploads = () => {
   const [items, setItems] = useState([]);
@@ -47,24 +48,29 @@ const MyUploads = () => {
   return (
     <div className="search-page">
       <h1 className="search-title">📦 My Uploaded Items</h1>
+
       {loading ? (
-        <p>Loading...</p>
+        <p className="search-loading">Loading...</p>
       ) : items.length === 0 ? (
-        <p>No uploads yet.</p>
+        <p className="no-results">No uploads yet.</p>
       ) : (
         <div className="item-grid">
           {items.map((item) => (
             <div key={item.itemId} className="item-card">
               <img
                 src={
-                  item.imageUrl.startsWith("s3://")
+                  item.imageUrl?.startsWith("s3://")
                     ? item.imageUrl.replace(
                         "s3://aub-lostfound-images/",
                         "https://aub-lostfound-images.s3.eu-west-1.amazonaws.com/"
                       )
-                    : item.imageUrl
+                    : item.imageUrl || "https://via.placeholder.com/150"
                 }
                 alt={item.title}
+                onError={(e) => {
+                  e.target.onerror = null;
+                  e.target.src = "https://via.placeholder.com/150";
+                }}
               />
               <div className="info">
                 <h2>{item.title}</h2>
@@ -73,7 +79,7 @@ const MyUploads = () => {
                 <button
                   className="delete-button"
                   onClick={() => handleDelete(item.itemId)}
-                  style={{ backgroundColor: "red", color: "white", marginTop: "10px" }}
+                  style={{ backgroundColor: "#ff4d4f", color: "white", marginTop: "10px" }}
                 >
                   Delete
                 </button>
@@ -86,4 +92,4 @@ const MyUploads = () => {
   );
 };
 
-export default MyUploads;
+export default MyUploads;
